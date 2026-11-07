@@ -82,6 +82,18 @@ export async function arkivRoutes(server: FastifyInstance) {
       status?: 'ALLOW' | 'REVIEW' | 'BLOCK' | 'UNKNOWN';
     };
   }>('/api/arkiv/risk/report', async (request, reply) => {
+    const configuredAdminKey = process.env.ARKIV_REPORT_ADMIN_KEY;
+    const suppliedAdminKey = request.headers['x-arkiv-admin-key'];
+    if (
+      !configuredAdminKey ||
+      typeof suppliedAdminKey !== 'string' ||
+      suppliedAdminKey !== configuredAdminKey
+    ) {
+      return reply.code(403).send({
+        status: 'error',
+        message: 'Arkiv risk publication requires a server-configured x-arkiv-admin-key',
+      });
+    }
     try {
       const writeConfig = loadArkivWriteConfig();
       const publisher = createMerchantRiskPublisher(writeConfig);

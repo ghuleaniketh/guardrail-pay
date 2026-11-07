@@ -24,6 +24,14 @@ const terms: X402PaymentTerms = {
   expiresAt: Math.floor(Date.now() / 1000) + 300, // 5 min TTL
 };
 
+/**
+ * Merchant-owned payment terms used by the paid route and the controlled demo.
+ * Callers receive a copy so they cannot mutate the server's payment challenge.
+ */
+export function getMerchantPaymentTerms(): X402PaymentTerms {
+  return { ...terms };
+}
+
 export function paidRoutes(server: FastifyInstance) {
   server.get('/api/research/paid', async (request, reply) => {
     const paymentHeader = request.headers['payment-signature'];

@@ -5,6 +5,7 @@ import { arkivRoutes } from './routes/arkiv.js';
 import { rotationRoutes } from './routes/rotation.js';
 import { worldRoutes } from './routes/world.js';
 import { wellknownRoutes } from './routes/wellknown.js';
+import { demoRoutes } from './routes/demo.js';
 
 export function buildApp() {
   const server = Fastify();
@@ -22,6 +23,7 @@ export function buildApp() {
   server.register(rotationRoutes);
   server.register(worldRoutes);
   server.register(wellknownRoutes);
+  server.register(demoRoutes);
 
   return server;
 }

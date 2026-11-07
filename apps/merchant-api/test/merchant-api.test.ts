@@ -39,6 +39,22 @@ describe('merchant-api (secure payment verification)', () => {
     expect(res.headers['payment-required']).toBeDefined();
   });
 
+  it('keeps demo execution and Arkiv risk publication off unauthenticated browser requests', async () => {
+    const demo = await app.inject({
+      method: 'POST',
+      url: '/api/demo/run',
+      payload: { scenarioId: 'SUSPICIOUS_PAYMENT' },
+    });
+    const publication = await app.inject({
+      method: 'POST',
+      url: '/api/arkiv/risk/report',
+      payload: { walletKey: '0.0.90001' },
+    });
+
+    expect(demo.statusCode).toBe(403);
+    expect(publication.statusCode).toBe(403);
+  });
+
   it('GET /api/research/paid with empty payment-signature header returns 402 (challenge required)', async () => {
     const res = await app.inject({
       method: 'GET',
